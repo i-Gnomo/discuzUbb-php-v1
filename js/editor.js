@@ -1,5 +1,5 @@
 /******************************************************************************
-  Crossday Discuz! Board - Editor Modules for Discuz!
+  Crossday Discuz! Board - Editor Modules for Discuz! 
   Copyright 2001-2006 Comsenz Inc. (http://www.comsenz.com)
 *******************************************************************************/
 
@@ -178,10 +178,13 @@ function wrapTags(tagname, useoption, selection) {
 
 function applyFormat(cmd, dialog, argument) {
 
+	console.log(editdoc);
 	if(wysiwyg) {
+		//document.execCommand处理html数据时常用语法 (cmd:是处理方式)
 		editdoc.execCommand(cmd, (isUndefined(dialog) ? false : dialog), (isUndefined(argument) ? true : argument));
 		return false;
 	}
+
 	switch(cmd) {
 		case 'bold':
 		case 'italic':
@@ -309,13 +312,18 @@ function discuzcode(cmd, arg) {
 		sel = stripSimple('indent', sel, 1);
 		insertText(sel);
 	} else if(cmd == 'createlink') {
+		//add url
+		console.log('createlink');
 		if(wysiwyg) {
+			console.log(wysiwyg+'所见即所得模式');
 			if(is_moz || is_chrome || is_opera) {
 				var url = showPrompt(lang['enter_link_url'], 'http://');
+				console.log(url+'---'+verifyPrompt(url));
 				if((url = verifyPrompt(url)) !== false) {
+					console.log(getSel()+'--判断有选中的文字作为文字链接');
 					if(getSel()) {
-						applyFormat('unlink');
-						applyFormat('createlink', is_ie, (isUndefined(url) ? true : url));
+						applyFormat('unlink'); //从当前选中区中删除全部超级链接
+						applyFormat('createlink', is_ie, (isUndefined(url) ? true : url)); //将选中文本变成超连接
 					} else {
 						insertText('<a href="' + url + '">' + url + '</a>');
 					}
@@ -513,16 +521,17 @@ function getSel() {
 }
 
 function insertText(text, movestart, moveend) {
+	console.log('insertText:'+text+'-'+movestart+'-'+moveend);
 	if(wysiwyg) {
 		if(is_moz || is_chrome || is_opera) {
-			var fragment = editdoc.createDocumentFragment();
-			var holder = editdoc.createElement('span');
+			var fragment = editdoc.createDocumentFragment(); //创建文档碎片节点
+			var holder = editdoc.createElement('span'); 
 			holder.innerHTML = text;
-
+			//console.log(holder.firstChild);
 			while(holder.firstChild) {
-				fragment.appendChild(holder.firstChild);
+				fragment.appendChild(holder.firstChild); //把创建的span的子节点添加到fragment上
 			}
-			insertNodeAtSelection(fragment);
+			insertNodeAtSelection(fragment); //把文档碎片一次性添加到document上
 		} else {
 			checkFocus();
 			if(!isUndefined(editdoc.selection) && editdoc.selection.type != 'Text' && editdoc.selection.type != 'None') {
@@ -583,6 +592,7 @@ function isUndefined(variable) {
 
 
 function showPrompt(dialogtxt, defaultval) {
+	//弹出prompt提示框 并返回所填的值
 	return trim(prompt(dialogtxt, defaultval) + '');
 }
 
@@ -764,18 +774,21 @@ function str_pad(text, length, padstring) {
 }
 
 function insertNodeAtSelection(text) {
-	checkFocus();
+	checkFocus();//光标位置
 
-	var sel = editwin.getSelection();
+	var sel = editwin.getSelection(); //返回一个Selection对象,表示用户选择的文本范围或光标的当前位置。
 	var range = sel ? sel.getRangeAt(0) : editdoc.createRange();
-	sel.removeAllRanges();
+	sel.removeAllRanges(); //清除所选中的内容
 	range.deleteContents();
 
 	var node = range.startContainer;
 	var pos = range.startOffset;
 
+	console.log('text.nodeType:'+text.nodeType+'-node.nodeType:'+node.nodeType);
+
 	switch(node.nodeType) {
 		case Node.ELEMENT_NODE:
+			// element node 值为1
 			if(text.nodeType == Node.DOCUMENT_FRAGMENT_NODE) {
 				selNode = text.firstChild;
 			} else {
@@ -786,6 +799,7 @@ function insertNodeAtSelection(text) {
 			break;
 
 		case Node.TEXT_NODE:
+			// text node 值为3
 			if(text.nodeType == Node.TEXT_NODE) {
 				var text_length = pos + text.length;
 				node.insertData(pos, text.data);
@@ -794,14 +808,15 @@ function insertNodeAtSelection(text) {
 				range.setStart(node, text_length);
 				sel.addRange(range);
 			} else {
-				node = node.splitText(pos);
+				console.log('pos：'+pos);
+				node = node.splitText(pos); //返回分割后的新的文本节点
 				var selNode;
 				if(text.nodeType == Node.DOCUMENT_FRAGMENT_NODE) {
-					selNode = text.firstChild;
+					selNode = text.firstChild; //yes
 				} else {
 					selNode = text;
 				}
-				node.parentNode.insertBefore(text, node);
+				node.parentNode.insertBefore(text, node);//在node前插入text
 				add_range(selNode);
 			}
 			break;

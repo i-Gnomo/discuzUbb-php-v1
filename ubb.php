@@ -79,7 +79,7 @@
 		$strcontent = preg_replace($patterns, $replacer, $strcontent);
 
 
-		$searcharray = array("/\[\/url\]/","/\[\/email\]/","/\[\/color\]/", "/\[\/size\]/", "/\[\/font\]/", "/\[\/align\]/", "/\[b\]/", "/\[\/b\]/","/\[i\]/", "/\[\/i\]/", "/\[u\]/", "/\[\/u\]/", "/\[list\]/", "/\[list=1\]/", "/\[list=a\]/","/\[list=A\]/", "/\[*\]/", "/\[\/list\]/", "/\[indent\]/", "/\[\/indent\]/","/\[code\]/","/\[\/code\]/","/\[quote\]/","/\[\/quote\]/","/\[table\]/","/\[tr\]/","/\[td\]/","/\[\/tr\]/","/\[\/td\]/","/\[\/table\]/");
+		$searcharray = array("/\[\/url\]/","/\[\/email\]/","/\[\/color\]/", "/\[\/size\]/", "/\[\/font\]/", "/\[\/align\]/", "/\[b\]/", "/\[\/b\]/","/\[i\]/", "/\[\/i\]/", "/\[u\]/", "/\[\/u\]/", "/\[list\]/", "/\[list=1\]/", "/\[list=a\]/","/\[list=A\]/", "/\[\*\]/", "/\[\/list\]/", "/\[indent\]/", "/\[\/indent\]/","/\[code\]/","/\[\/code\]/","/\[quote\]/","/\[\/quote\]/","/\[table\]/","/\[tr\]/","/\[td\]/","/\[\/tr\]/","/\[\/td\]/","/\[\/table\]/");
 		$replacearray = array("</a>","</a>","</font>", "</font>", "</font>", "</div>", "<b>", "</b>", "<i>","</i>", "<u>", "</u>", "<ul>", "<ol type=1>", "<ol type=a>","<ol type=A>", "<li>", "</ul></ol>", "<blockquote>", "</blockquote>","<div><textarea name='codes' id='codes' rows='12' cols='65'>","</textarea><br/><input type='button' value='运行代码' onclick='RunCode()'> <input type='button' value='复制代码' onclick='CopyCode()'> <input type='button' value='另存代码' onclick='SaveCode()'> &nbsp;提示：您可以先修改部分代码再运行</div>","<div style='background:#E2F2FF;width:90%;height:300px;border:1px solid #3CAAEC'>","</div>","<table>","<tr>","<td>","</tr>","</td>","</table>");
 	
 		for($i=0;$i<count($searcharray);$i++){
